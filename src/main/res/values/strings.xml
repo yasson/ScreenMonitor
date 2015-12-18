@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">ScreenMonitor</string>
+    <string name="action_settings">Settings</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="monitor_start">屏幕点亮监控启动</string>
+    <string name="dont_stop">请不要停止该应用运行</string>
+    <string name="light_time">亮屏时间</string>
+    <string name="light_total_time">亮屏保持总时间</string>
+    <string name="light_less">解锁后亮屏时间少于1分钟</string>
+    <string name="light_then_present">亮屏并且解锁时间</string>
+    <string name="light_then_off">亮屏没有解锁就暗屏时间</string>
+    <string name="times">次数</string>
+    <string name="light_remain_time">亮屏保持总时间</string>
+
+
+    <string name="light_times">亮屏总次数</string>
+    <string name="light_times_present">解锁次数</string>
+    <string name="light_times_present_less">解锁后亮屏小于1分钟次数</string>
+    <string name="light_times_off">亮屏后未解锁就暗屏次数</string>
+    <string name="all">所有</string>
+    <string name="today">今天</string>
+
+
+</resources>
