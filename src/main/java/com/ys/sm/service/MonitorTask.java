@@ -30,19 +30,20 @@ public class MonitorTask extends TimerTask implements ScreenReceiver.IScreenChan
 
     @Override
     public void run() {
-        String cpname = Utils.getCurrentAppPname(context);
-        if (!lastPackageName.equals(cpname)) {
+        String pName = Utils.getCurrentAppPname(context);
+        if (!lastPackageName.equals(pName)) {
             startTime = insertOrUpdateApp(context);
-            lastPackageName = cpname;
-            packages.add(cpname);
-            Log.i("ys", "MonitorTask pname changed :" + cpname);
+            lastPackageName = pName==null?"":pName;
+            packages.add(pName);
+            Log.i("ys", "MonitorTask pname changed :" + pName);
         }
     }
 
 
     @Override
     public void onUserPresent(Context context) {
-        lastPackageName = Utils.getCurrentAppPname(context);
+        String name = Utils.getCurrentAppPname(context);
+        lastPackageName = null==name?"":name;
         startTime = System.currentTimeMillis();
 
     }
