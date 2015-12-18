@@ -36,10 +36,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 return;
             switch (msg.what) {
                 case 0:
-//                    activity.switchBtnStatus();
                     break;
                 case 1:
-//                    activity.switchBtnStatus();
                     break;
                 default:
                     break;
