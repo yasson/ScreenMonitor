@@ -30,18 +30,17 @@ public class AppRecDao implements IAppRecDao {
     @Override
     public void insertApp(long day, String pName, long duation) {
         mDb = mDbHelper.getWritableDatabase();
-        mDb.execSQL(
-                "insert into " + TB_NAME_AR + "(" + C_DAY + "," + C_PNAME + "," + C_COUNT + "," + C_DUATION + ") values (" + day + ",\"" + pName +
-                "\"," +
-                "1," +
-                duation + ")");
+        mDb.execSQL("insert into " + TB_NAME_AR + "(" + C_DAY + "," + C_PNAME + "," + C_COUNT + "," + C_DUATION + ") values (" + day + ",\"" + pName +
+                    "\"," +
+                    "1," +
+                    duation + ")");
         mDb.close();
     }
 
     @Override
     public boolean hasAppInDay(long day, String pName) {
         mDb = mDbHelper.getReadableDatabase();
-        Cursor c = mDb.rawQuery("select * from " + TB_NAME_AR + " where " + C_DAY + "=" + day + " and " + C_PNAME + "=\"" + pName+"\"", null);
+        Cursor c = mDb.rawQuery("select * from " + TB_NAME_AR + " where " + C_DAY + "=" + day + " and " + C_PNAME + "=\"" + pName + "\"", null);
         boolean res = false;
         if (null != c && c.moveToFirst()) {
             c.close();
@@ -54,10 +53,9 @@ public class AppRecDao implements IAppRecDao {
     @Override
     public void updateAppRecords(long day, String pName, long duationInc) {
         mDb = mDbHelper.getWritableDatabase();
-        mDb.execSQL(
-                "update " + TB_NAME_AR + " set " + C_COUNT + "=" + C_COUNT + "+1," + C_DUATION + "=" + C_DUATION+"+" + duationInc + " where " +
-                C_DAY +
-                "=" + day + " and " + C_PNAME + "=\"" + pName+"\"");
+        mDb.execSQL("update " + TB_NAME_AR + " set " + C_COUNT + "=" + C_COUNT + "+1," + C_DUATION + "=" + C_DUATION + "+" + duationInc + " where " +
+                    C_DAY +
+                    "=" + day + " and " + C_PNAME + "=\"" + pName + "\"");
         mDb.close();
     }
 
@@ -86,15 +84,16 @@ public class AppRecDao implements IAppRecDao {
     public List<AppRecordModel> getAppRecordsOfAll() {
         mDb = mDbHelper.getReadableDatabase();
         List<AppRecordModel> list = null;
-        Cursor c = mDb.rawQuery("select * from " + TB_NAME_AR  + " order by " + C_COUNT + " desc", null);
+        Cursor c = mDb.rawQuery(
+                "select " + C_PNAME + "," + "sum(" + C_COUNT + "),sum(" + C_DUATION + ") from " + TB_NAME_AR + " group by " + C_PNAME +
+                " order by sum(" + C_COUNT + ") desc", null);
         if (null != c && c.moveToFirst()) {
             list = new ArrayList<>();
             do {
                 AppRecordModel model = new AppRecordModel();
-                model.day = c.getLong(c.getColumnIndex(C_DAY));
                 model.pName = c.getString(c.getColumnIndex(C_PNAME));
-                model.count = c.getInt(c.getColumnIndex(C_COUNT));
-                model.duation = c.getLong(c.getColumnIndex(C_DUATION));
+                model.count = c.getInt(c.getColumnIndex("sum(" + C_COUNT + ")"));
+                model.duation = c.getLong(c.getColumnIndex("sum(" + C_DUATION + ")"));
                 list.add(model);
             } while (c.moveToNext());
             c.close();
