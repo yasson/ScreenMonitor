@@ -17,4 +17,15 @@ public class SLDayModel {
     public long end;
     public long duation;
 
+    @Override
+    public String toString() {
+        return "SLDayModel{" +
+               "day=" + day +
+               ", type=" + type +
+               ", count=" + count +
+               ", start=" + start +
+               ", end=" + end +
+               ", duation=" + duation +
+               '}';
+    }
 }

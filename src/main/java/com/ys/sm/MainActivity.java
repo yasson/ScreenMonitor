@@ -16,9 +16,15 @@ import com.ys.sm.model.SLDayModel;
 import com.ys.sm.service.MonitorService;
 import com.ys.sm.utils.Tool;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -46,6 +52,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private Button   btnToday;
+    private Button   btn_save;
     private Button   btnAll;
     private TextView tvTotal;
     private TextView tvPresent;
@@ -69,7 +76,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-       loadToday();
+        loadToday();
     }
 
     private void loadToday() {
@@ -79,21 +86,67 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setViewData(today);
         setListView(today);
     }
-    private void loadAll(){
+
+    private void loadAll() {
         btnAll.setBackgroundResource(R.color.colorPrimary);
         btnToday.setBackgroundResource(android.R.color.transparent);
         setViewData(0);
         setListView(0);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_today:
-               loadToday();
+                loadToday();
                 break;
             case R.id.btn_all:
                 loadAll();
                 break;
+            case R.id.btn_save:
+                saveLog();
+                break;
+        }
+    }
+
+    private void saveLog() {
+        List<SLDayModel> logs = SLDbManager.getInstance(this).getAllLightInfos();
+        String today = "today.txt";
+        String all = "all.txt";
+        String dir = Environment.getExternalStorageDirectory().getPath();
+        File file_today = new File(dir +"/"+ today);
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(file_today);
+            File file_all = new File(dir + all);
+            long day = 0;
+            for (SLDayModel model : logs) {
+                StringBuilder sb = new StringBuilder();
+                if (model.type != SLDayModel.TYPE_LOCK)
+                    continue;
+                if (day != model.day) {
+                    day = model.day;
+                }
+                Date date = new Date(day);
+                String days = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+                String startTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(model.start));
+                String endTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(model.end));
+                sb.append(days).append("|解锁:").append(startTime).append("|锁屏:").append(endTime).append("|持续:").append(Tool
+                        .getDuation
+                        (model.duation))
+                  .append("\n");
+                fw.write(sb.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -138,6 +191,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void initView() {
         btnToday = (Button) findViewById(R.id.btn_today);
+        btn_save = (Button) findViewById(R.id.btn_save);
+        btn_save.setOnClickListener(this);
         btnAll = (Button) findViewById(R.id.btn_all);
         mLv = (ListView) findViewById(R.id.lv);
         btnToday.setOnClickListener(this);
@@ -169,16 +224,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
     };
 
 
-
-//    private void switchBtnStatus() {
-//        if (isStart) {
-//            isStart = false;
-//            btnToday.setText(R.string.start);
-//        } else {
-//            isStart = true;
-//            btnToday.setText(R.string.stop);
-//        }
-//    }
+    //    private void switchBtnStatus() {
+    //        if (isStart) {
+    //            isStart = false;
+    //            btnToday.setText(R.string.start);
+    //        } else {
+    //            isStart = true;
+    //            btnToday.setText(R.string.stop);
+    //        }
+    //    }
 
     private void startMonitor() {
         Message msg = Message.obtain(null, 0);

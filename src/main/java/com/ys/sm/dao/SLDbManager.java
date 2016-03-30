@@ -67,6 +67,14 @@ public class SLDbManager {
         }
     }
 
+    /**
+     * 获取所有屏幕变化信息
+     * @return
+     */
+    public List<SLDayModel> getAllLightInfos(){
+        return mSLDao.getAll();
+    }
+
     public List<SLDayModel> getLightInfos(long day) {
         if (day==0){
             return mSLDao.getInfoOfAll(TYPE_LIGHT);

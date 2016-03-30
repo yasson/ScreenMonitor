@@ -130,6 +130,25 @@ public class SLDao implements ISLDao {
 
     @Override
     public List<SLDayModel> getAll() {
+        mDb = mDbHelper.getReadableDatabase();
+        Cursor c = mDb.rawQuery("select * from " + TB_NAME_SL, null);
+        if (null != c && c.moveToFirst()) {
+            List<SLDayModel> list = new ArrayList<>();
+            do {
+                SLDayModel model = new SLDayModel();
+                model.day = c.getLong(c.getColumnIndex(C_DAY));
+                model.type = c.getInt(c.getColumnIndex(C_TYPE));
+                model.count = c.getInt(c.getColumnIndex(C_COUNT));
+                model.start = c.getInt(c.getColumnIndex(C_START));
+                model.end = c.getInt(c.getColumnIndex(C_END));
+                model.duation = c.getInt(c.getColumnIndex(C_DUATION));
+                list.add(model);
+            } while (c.moveToNext());
+            c.close();
+            mDb.close();
+            return list;
+        }
+        mDb.close();
         return null;
     }
 

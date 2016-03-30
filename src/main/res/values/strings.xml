@@ -20,6 +20,7 @@
     <string name="light_times_off">亮屏后未解锁就暗屏次数</string>
     <string name="all">所有</string>
     <string name="today">今天</string>
+    <string name="savelog">保存log</string>
 
 
 </resources>
